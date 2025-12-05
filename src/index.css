@@ -1,0 +1,244 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 24 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 280 100% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 24 100% 50%;
+    --radius: 1rem;
+
+    /* Fitness App Custom Colors */
+    --fitness-orange: 24 100% 50%;
+    --fitness-yellow: 45 100% 55%;
+    --fitness-purple: 280 100% 60%;
+    --fitness-pink: 330 100% 60%;
+    --fitness-success: 142 76% 36%;
+    --fitness-glass: 0 0% 100%;
+    --fitness-glass-border: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 240 10% 4%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 8%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 8%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 24 100% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 16%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 5% 16%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 280 100% 65%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5% 20%;
+    --input: 240 5% 20%;
+    --ring: 24 100% 55%;
+
+    /* Dark mode fitness colors */
+    --fitness-orange: 24 100% 55%;
+    --fitness-yellow: 45 100% 60%;
+    --fitness-purple: 280 100% 65%;
+    --fitness-pink: 330 100% 65%;
+    --fitness-success: 142 76% 46%;
+    --fitness-glass: 240 10% 12%;
+    --fitness-glass-border: 240 5% 25%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-inter antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer components {
+  /* Glassmorphism Card */
+  .glass-card {
+    @apply relative overflow-hidden rounded-2xl;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--fitness-glass) / 0.1) 0%,
+      hsl(var(--fitness-glass) / 0.05) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--fitness-glass-border) / 0.1);
+    box-shadow: 
+      0 4px 30px hsl(var(--fitness-orange) / 0.05),
+      0 1px 3px hsl(0 0% 0% / 0.1),
+      inset 0 1px 0 hsl(var(--fitness-glass-border) / 0.1);
+  }
+
+  .glass-card-solid {
+    @apply relative overflow-hidden rounded-2xl;
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 4px 20px hsl(0 0% 0% / 0.1);
+  }
+
+  /* Gradient Backgrounds */
+  .gradient-primary {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--fitness-orange)) 0%,
+      hsl(var(--fitness-yellow)) 50%,
+      hsl(var(--fitness-purple)) 100%
+    );
+  }
+
+  .gradient-orange-yellow {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--fitness-orange)) 0%,
+      hsl(var(--fitness-yellow)) 100%
+    );
+  }
+
+  .gradient-purple-pink {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--fitness-purple)) 0%,
+      hsl(var(--fitness-pink)) 100%
+    );
+  }
+
+  .gradient-text {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--fitness-orange)) 0%,
+      hsl(var(--fitness-yellow)) 50%,
+      hsl(var(--fitness-purple)) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glow Effects */
+  .glow-orange {
+    box-shadow: 0 0 40px hsl(var(--fitness-orange) / 0.4);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 40px hsl(var(--fitness-purple) / 0.4);
+  }
+
+  /* Ring Progress */
+  .progress-ring {
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+  }
+
+  .progress-ring circle {
+    transition: stroke-dashoffset 0.5s ease-in-out;
+  }
+
+  /* Skeleton Loading */
+  .skeleton {
+    @apply animate-pulse rounded-lg;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 0%,
+      hsl(var(--muted) / 0.5) 50%,
+      hsl(var(--muted)) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+  }
+
+  @keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Streak Fire Animation */
+  .streak-fire {
+    animation: fire-flicker 0.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes fire-flicker {
+    0% { transform: scale(1) rotate(-2deg); }
+    100% { transform: scale(1.1) rotate(2deg); }
+  }
+
+  /* Water Drop Animation */
+  .water-drop {
+    animation: drop-bounce 0.4s ease-out;
+  }
+
+  @keyframes drop-bounce {
+    0% { transform: translateY(-10px) scale(0.8); opacity: 0; }
+    50% { transform: translateY(2px) scale(1.1); }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  /* Pulse Ring */
+  .pulse-ring {
+    animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.05); }
+  }
+}
+
+@layer utilities {
+  /* Safe area for mobile */
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 20px);
+  }
+
+  /* Custom scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Text shadow for contrast */
+  .text-shadow {
+    text-shadow: 0 2px 10px hsl(0 0% 0% / 0.3);
+  }
+}
