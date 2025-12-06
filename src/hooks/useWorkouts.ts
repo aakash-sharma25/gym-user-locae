@@ -1,15 +1,76 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
-import type { Workout, WorkoutExercise, WorkoutAssignment, Trainer, WorkoutLog } from '@/types/database';
+import type { Trainer, WorkoutLog } from '@/types/database';
 
-interface WorkoutWithDetails extends Workout {
-    exercises: WorkoutExercise[];
-    trainer: Trainer | null;
+// Match actual database schema
+interface DbWorkoutExercise {
+    id: string;
+    workout_id: string;
+    name: string;
+    sets: number;
+    reps: string; // Database stores as text
+    rest: string; // Database stores as text
+    notes: string | null;
+    order_index: number;
+    animation_url: string | null;
+    created_at: string;
 }
 
-interface WorkoutAssignmentWithWorkout extends WorkoutAssignment {
-    workout: WorkoutWithDetails;
+interface DbWorkout {
+    id: string;
+    name: string;
+    trainer_id: string | null;
+    body_part: string;
+    difficulty: string;
+    equipment: string;
+    duration: number;
+    thumbnail: string | null;
+    video_url: string | null;
+    usage_count: number;
+    created_at: string;
+    updated_at: string;
+    trainer: Trainer | null;
+    exercises: DbWorkoutExercise[];
+}
+
+interface DbWorkoutAssignment {
+    id: string;
+    workout_id: string;
+    member_id: string;
+    assigned_at: string;
+    status: string;
+    start_date: string | null;
+    end_date: string | null;
+    active_days: string[] | null;
+    notify: boolean | null;
+    notes: string | null;
+    workout: DbWorkout;
+}
+
+// Transformed types for frontend use
+export interface WorkoutExerciseData {
+    id: string;
+    name: string;
+    sets: number;
+    reps: number;
+    weight: number;
+    rest_time: number;
+    notes: string | null;
+    order_index: number;
+    animation_url: string | null;
+    animation_type: string | null;
+}
+
+export interface WorkoutData {
+    id: string;
+    name: string;
+    duration: number;
+    calories: number;
+    difficulty: string;
+    muscle_groups: string[];
+    exercises: WorkoutExerciseData[];
+    trainer: Trainer | null;
 }
 
 export function useWorkouts() {
@@ -17,19 +78,19 @@ export function useWorkouts() {
 
     return useQuery({
         queryKey: ['workouts', member?.id],
-        queryFn: async (): Promise<WorkoutAssignmentWithWorkout[]> => {
+        queryFn: async (): Promise<DbWorkoutAssignment[]> => {
             if (!member?.id) return [];
 
             const { data, error } = await supabase
                 .from('workout_assignments')
                 .select(`
-          *,
-          workout:workouts(
-            *,
-            trainer:trainers(*),
-            exercises:workout_exercises(*)
-          )
-        `)
+                    *,
+                    workout:workouts(
+                        *,
+                        trainer:trainers(*),
+                        exercises:workout_exercises(*)
+                    )
+                `)
                 .eq('member_id', member.id)
                 .eq('status', 'active')
                 .order('assigned_at', { ascending: false });
@@ -40,7 +101,7 @@ export function useWorkouts() {
             }
 
             // Sort exercises by order_index
-            return (data as WorkoutAssignmentWithWorkout[]).map(assignment => ({
+            return (data as DbWorkoutAssignment[]).map(assignment => ({
                 ...assignment,
                 workout: {
                     ...assignment.workout,
@@ -53,6 +114,20 @@ export function useWorkouts() {
     });
 }
 
+// Helper to parse reps string to number
+const parseReps = (reps: string): number => {
+    const match = reps.match(/\d+/);
+    return match ? parseInt(match[0], 10) : 10;
+};
+
+// Helper to parse rest string to seconds
+const parseRestTime = (rest: string): number => {
+    const match = rest.match(/\d+/);
+    const value = match ? parseInt(match[0], 10) : 60;
+    if (rest.toLowerCase().includes('min')) return value * 60;
+    return value;
+};
+
 // Get today's active workout (first active assignment)
 export function useTodayWorkout() {
     const { member } = useAuth();
@@ -61,8 +136,32 @@ export function useTodayWorkout() {
     // Only show loading if we have a member and the query is actually loading
     const isLoading = !!member?.id && queryLoading;
 
+    // Transform database workout to frontend format
+    const rawWorkout = workouts?.[0]?.workout ?? null;
+    const transformedWorkout: WorkoutData | null = rawWorkout ? {
+        id: rawWorkout.id,
+        name: rawWorkout.name,
+        duration: rawWorkout.duration,
+        calories: Math.round(rawWorkout.duration * 8), // Estimate calories
+        difficulty: rawWorkout.difficulty,
+        muscle_groups: [rawWorkout.body_part],
+        trainer: rawWorkout.trainer,
+        exercises: rawWorkout.exercises.map(e => ({
+            id: e.id,
+            name: e.name,
+            sets: e.sets,
+            reps: parseReps(e.reps),
+            weight: 0, // Default weight, user adjusts
+            rest_time: parseRestTime(e.rest),
+            notes: e.notes,
+            order_index: e.order_index,
+            animation_url: e.animation_url,
+            animation_type: null,
+        })),
+    } : null;
+
     return {
-        workout: workouts?.[0]?.workout ?? null,
+        workout: transformedWorkout,
         assignment: workouts?.[0] ?? null,
         isLoading,
         error,
