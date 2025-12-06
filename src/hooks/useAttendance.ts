@@ -83,7 +83,7 @@ export function useCheckIn() {
                     member_id: member.id,
                     date: now.toISOString().split('T')[0],
                     check_in_time: timeString,
-                })
+                } as any)
                 .select()
                 .single();
 
@@ -106,8 +106,8 @@ export function useCheckOut() {
             const now = new Date();
             const timeString = now.toTimeString().split(' ')[0];
 
-            const { error } = await supabase
-                .from('member_attendance')
+            const { error } = await (supabase
+                .from('member_attendance') as any)
                 .update({ check_out_time: timeString })
                 .eq('id', attendanceId);
 
@@ -132,7 +132,7 @@ export function useAttendanceStats() {
         return {
             isLoading,
             monthlyCount: 0,
-            currentStreak: member?.streak || 0,
+            currentStreak: 0,
             attendanceCalendar: {} as Record<string, boolean>,
         };
     }

@@ -86,7 +86,7 @@ const Workout = memo(() => {
       restTime: e.rest_time || 60,
       completed: false,
       animation: e.animation_type || 'bench-press',
-      animationUrl: e.animation_url, // Pass Supabase Storage URL
+      animationUrl: e.animation_url, // Lottie JSON URL from database
     })) || mockTodayWorkout.exercises,
   } : mockTodayWorkout;
 
