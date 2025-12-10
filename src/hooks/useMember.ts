@@ -30,7 +30,6 @@ export function useMember() {
                 return null;
             }
 
-            console.log('🔍 [useMember] Member with gym data:', data);
             return data as MemberWithGym;
         },
         enabled: !!authMember?.id,

@@ -22,7 +22,6 @@ export function useGymBranding() {
                     return null;
                 }
 
-                console.log('🔍 [useGymBranding] Gym data for member:', data);
                 return data as GymBranding;
             }
 

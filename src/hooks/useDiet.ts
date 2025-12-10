@@ -54,29 +54,9 @@ export function useDietPlan() {
     return useQuery({
         queryKey: ['diet-plan', member?.id],
         queryFn: async (): Promise<DbDietAssignment | null> => {
-            // ==== DEBUG: Query ALL diet_assignments without filters ====
-            const { data: allDietAssignments, error: debugError } = await (supabase as any)
-                .from('diet_assignments')
-                .select('id, member_id, diet_plan_id, status, start_date')
-                .limit(10);
-
-            console.log('🔍 [DEBUG] ALL diet_assignments (no filter):', allDietAssignments);
-            console.log('🔍 [DEBUG] Error if any:', debugError);
-
-            // ==== DEBUG: Query ALL diet_plans ====
-            const { data: allDietPlans } = await (supabase as any)
-                .from('diet_plans')
-                .select('id, name')
-                .limit(5);
-            console.log('🔍 [DEBUG] ALL diet_plans (no filter):', allDietPlans);
-            // ==== END DEBUG ====
-
             if (!member?.id) {
-                console.log('🔍 [useDietPlan] No member ID found');
                 return null;
             }
-
-            console.log('🔍 [useDietPlan] Current member ID from auth:', member.id);
 
             const { data, error } = await supabase
                 .from('diet_assignments')
@@ -98,7 +78,6 @@ export function useDietPlan() {
                 return null;
             }
 
-            console.log('🔍 [useDietPlan] Filtered result for member:', data);
             return data as DbDietAssignment | null;
         },
         enabled: !!member?.id,
