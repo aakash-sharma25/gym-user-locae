@@ -24,6 +24,7 @@ import OrderSuccess from "./pages/OrderSuccess";
 import Login from "./pages/Login";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
+import DeleteAccount from "./pages/DeleteAccount";
 import NotFound from "./pages/NotFound";
 import Debug from "./pages/Debug";
 
@@ -77,6 +78,7 @@ const AppRoutes = memo(() => {
       <Route path="/login" element={<Login />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<Terms />} />
+      <Route path="/delete-account" element={<DeleteAccount />} />
       <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/workout" element={<ProtectedRoute><Workout /></ProtectedRoute>} />
       <Route path="/diet" element={<ProtectedRoute><Diet /></ProtectedRoute>} />
@@ -100,7 +102,7 @@ const AppContent = memo(() => {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
   const isThemeSettings = location.pathname === '/theme-settings';
-  const isLegalPage = ['/privacy-policy', '/terms'].includes(location.pathname);
+  const isLegalPage = ['/privacy-policy', '/terms', '/delete-account'].includes(location.pathname);
   const hideBottomNav = ['/shop', '/cart', '/checkout', '/address/add', '/order-success'].includes(location.pathname);
 
   return (

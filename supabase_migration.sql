@@ -486,6 +486,31 @@ CREATE INDEX IF NOT EXISTS idx_member_notifications_member ON member_notificatio
 CREATE INDEX IF NOT EXISTS idx_member_notifications_unread ON member_notifications(member_id, is_read) WHERE is_read = false;
 
 -- =====================================================
+-- ACCOUNT DELETION REQUESTS (Public form submissions)
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS account_deletion_requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  identifier TEXT NOT NULL, -- email or phone
+  message TEXT,
+  status TEXT DEFAULT 'pending', -- pending, processed, rejected
+  processed_at TIMESTAMPTZ,
+  notes TEXT, -- admin notes after processing
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE account_deletion_requests ENABLE ROW LEVEL SECURITY;
+
+-- Allow anyone to insert (public form - no auth required)
+DROP POLICY IF EXISTS "Public insert deletion requests" ON account_deletion_requests;
+CREATE POLICY "Public insert deletion requests" ON account_deletion_requests
+  FOR INSERT WITH CHECK (true);
+
+-- Create index for admin queries
+CREATE INDEX IF NOT EXISTS idx_deletion_requests_status ON account_deletion_requests(status);
+CREATE INDEX IF NOT EXISTS idx_deletion_requests_created ON account_deletion_requests(created_at DESC);
+
+-- =====================================================
 -- MIGRATION COMPLETE!
 -- Next: Add test data or connect your app
 -- =====================================================

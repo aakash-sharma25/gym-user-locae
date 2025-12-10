@@ -351,6 +351,12 @@ export interface Database {
                 Update: Partial<MemberPreferences>;
                 Relationships: [];
             };
+            account_deletion_requests: {
+                Row: AccountDeletionRequest;
+                Insert: Partial<AccountDeletionRequest>;
+                Update: Partial<AccountDeletionRequest>;
+                Relationships: [];
+            };
         };
         Views: {
             [_ in never]: never;
@@ -379,5 +385,18 @@ export interface MemberNotification {
     icon: string;
     action_url: string | null;
     is_read: boolean;
+    created_at: string;
+}
+
+// Account Deletion Request types
+export type DeletionRequestStatus = 'pending' | 'processed' | 'rejected';
+
+export interface AccountDeletionRequest {
+    id: string;
+    identifier: string; // email or phone
+    message: string | null;
+    status: DeletionRequestStatus;
+    processed_at: string | null;
+    notes: string | null;
     created_at: string;
 }

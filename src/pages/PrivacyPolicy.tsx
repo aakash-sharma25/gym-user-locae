@@ -117,7 +117,12 @@ const PrivacyPolicy = memo(() => {
                             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-2 ml-2">
                                 <li>Access and receive a copy of your personal data</li>
                                 <li>Rectify or update inaccurate information</li>
-                                <li>Request deletion of your personal data</li>
+                                <li>
+                                    Request deletion of your personal data - {' '}
+                                    <Link to="/delete-account" className="text-fitness-orange hover:underline">
+                                        Submit a deletion request
+                                    </Link>
+                                </li>
                                 <li>Object to or restrict processing of your data</li>
                                 <li>Withdraw consent at any time</li>
                             </ul>
