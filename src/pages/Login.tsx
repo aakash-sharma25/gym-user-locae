@@ -1,7 +1,7 @@
 import { useState, memo } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, Dumbbell, Loader2 } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Dumbbell, Loader2, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { GlassCard } from '@/components/ui/GlassCard';
@@ -56,6 +56,24 @@ const Login = memo(() => {
             }
         } catch (error) {
             toast.error('An unexpected error occurred');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleGuestLogin = async () => {
+        setIsLoading(true);
+        try {
+            const result = await signIn('appbidzi@gmail.com', '123456');
+
+            if (result.error) {
+                toast.error(result.error);
+            } else {
+                toast.success('Welcome Guest!');
+                navigate('/');
+            }
+        } catch (error) {
+            toast.error('An unexpected error occurred during guest login');
         } finally {
             setIsLoading(false);
         }
@@ -205,6 +223,33 @@ const Login = memo(() => {
                                 {isSignUp ? 'Sign In' : 'Create Account'}
                             </button>
                         </p>
+                    </div>
+
+                    <div className="mt-6">
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t border-muted-foreground/20" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                                <span className="bg-background/80 px-2 text-muted-foreground backdrop-blur-sm">
+                                    Or continue with
+                                </span>
+                            </div>
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={handleGuestLogin}
+                            disabled={isLoading}
+                            className="mt-4 w-full px-4 py-3 rounded-xl border border-border bg-card/50 hover:bg-card/80 text-foreground transition-all duration-200 flex items-center justify-center gap-2 text-sm font-medium"
+                        >
+                            {isLoading ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <User className="h-4 w-4" />
+                            )}
+                            Continue as Guest
+                        </button>
                     </div>
 
                     {/* Help Text */}

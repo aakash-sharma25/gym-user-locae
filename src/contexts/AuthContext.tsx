@@ -39,18 +39,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
             (event, session) => {
                 if (!isMounted) return;
-                
+
                 // Only synchronous state updates here
                 setSession(session);
                 setUser(session?.user ?? null);
-                
+
                 // Defer member fetch with setTimeout to avoid deadlock
                 if (session?.user?.email) {
                     setTimeout(() => {
                         if (isMounted) {
                             fetchMemberProfile(session.user.email!).then(memberData => {
                                 if (isMounted) {
-                                    setMember(memberData);
+                                    // Prevent unnecessary updates if data hasn't changed
+                                    setMember(prev => {
+                                        if (JSON.stringify(prev) === JSON.stringify(memberData)) {
+                                            return prev;
+                                        }
+                                        return memberData;
+                                    });
                                     setIsLoading(false);
                                 }
                             });
@@ -66,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // THEN check for existing session
         supabase.auth.getSession().then(async ({ data: { session } }) => {
             if (!isMounted) return;
-            
+
             setSession(session);
             setUser(session?.user ?? null);
 
@@ -76,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     setMember(memberData);
                 }
             }
-            
+
             if (isMounted) {
                 setIsLoading(false);
             }

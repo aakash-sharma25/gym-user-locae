@@ -27,7 +27,7 @@ export function useNotifications() {
             return data as MemberNotification[];
         },
         enabled: !!member?.id,
-        staleTime: 1000 * 60 * 2, // 2 minutes
+        staleTime: 1000 * 60 * 5, // 5 minutes
     });
 }
 

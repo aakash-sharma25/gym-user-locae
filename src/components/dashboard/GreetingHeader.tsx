@@ -5,6 +5,8 @@ import { StreakBadge } from "@/components/ui/StreakBadge";
 import { NotificationPanel } from "@/components/notifications/NotificationPanel";
 import { useUnreadNotificationCount } from "@/hooks/useNotifications";
 
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+
 interface GreetingHeaderProps {
   name: string;
   avatar: string;
@@ -35,11 +37,12 @@ export const GreetingHeader = ({ name, avatar, streak }: GreetingHeaderProps) =>
             whileTap={{ scale: 0.95 }}
             className="relative"
           >
-            <img
-              src={avatar}
-              alt={name}
-              className="h-14 w-14 rounded-2xl object-cover ring-2 ring-fitness-orange/50"
-            />
+            <Avatar className="h-14 w-14 ring-2 ring-fitness-orange/50">
+              <AvatarImage src={avatar} alt={name} className="object-cover" />
+              <AvatarFallback className="bg-fitness-orange/10 text-fitness-orange text-xl font-bold">
+                {name?.charAt(0)?.toUpperCase() || '?'}
+              </AvatarFallback>
+            </Avatar>
             <motion.div
               className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-fitness-success ring-2 ring-background"
               initial={{ scale: 0 }}

@@ -25,19 +25,8 @@ export function useGymBranding() {
                 return data as GymBranding;
             }
 
-            // Fallback: fetch any gym (for backwards compatibility)
-            const { data, error } = await supabase
-                .from('gym_branding')
-                .select('*')
-                .limit(1)
-                .single();
-
-            if (error) {
-                console.error('Error fetching gym branding:', error);
-                return null;
-            }
-
-            return data as GymBranding;
+            // No gym ID = no branding (use defaults)
+            return null;
         },
         staleTime: 1000 * 60 * 30, // 30 minutes - branding rarely changes
     });
